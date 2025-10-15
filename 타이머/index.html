@@ -1,19 +1,98 @@
-<!DOCTYPE html>
-<html lang="ko">
+﻿<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>현재 시각 타이머</title>
+    <title>Global Harmony Timer</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="clock" role="main">
-      <h1 class="clock__title">지금은</h1>
-      <div class="clock__time" id="clock-time">00:00:00</div>
-      <p class="clock__date" id="clock-date">요일, 날짜</p>
-      <button class="clock__toggle" id="format-toggle" type="button">
-        24시간 보기
-      </button>
+    <div class="minute-wave" id="minute-wave" aria-hidden="true"></div>
+    <main class="timeboard" role="main">
+      <section
+        class="timeboard__panel"
+        aria-label="Current browser time"
+        aria-live="polite"
+      >
+        <h1 class="timeboard__title">Current Browser Time</h1>
+        <p class="timeboard__time" id="clock-time">00:00:00</p>
+        <p class="timeboard__date" id="clock-date">
+          Wednesday, January 1, 1970
+        </p>
+        <button class="timeboard__toggle" id="format-toggle" type="button">
+          Switch to 12-hour
+        </button>
+      </section>
+      <section class="timeboard__map" aria-labelledby="map-title">
+        <svg
+          class="world-map"
+          viewBox="0 0 800 400"
+          role="img"
+          aria-labelledby="map-title map-desc"
+        >
+          <title id="map-title">Stylised world map</title>
+          <desc id="map-desc">
+            Tap a highlighted region to reveal the current local time.
+          </desc>
+          <path
+            class="world-map__region"
+            data-zone="North America"
+            data-tz="America/New_York"
+            role="button"
+            tabindex="0"
+            aria-label="North America"
+            d="M70 70h170l60 70-45 85-170-20-25-75z"
+          ></path>
+          <path
+            class="world-map__region"
+            data-zone="South America"
+            data-tz="America/Sao_Paulo"
+            role="button"
+            tabindex="0"
+            aria-label="South America"
+            d="M220 180h80l30 80-55 100-60-15-15-60z"
+          ></path>
+          <path
+            class="world-map__region"
+            data-zone="Europe"
+            data-tz="Europe/London"
+            role="button"
+            tabindex="0"
+            aria-label="Europe"
+            d="M360 80h110l70 50-40 70-110 12-45-48z"
+          ></path>
+          <path
+            class="world-map__region"
+            data-zone="Africa"
+            data-tz="Africa/Johannesburg"
+            role="button"
+            tabindex="0"
+            aria-label="Africa"
+            d="M420 150h110l50 90-50 120-110-30-25-65z"
+          ></path>
+          <path
+            class="world-map__region"
+            data-zone="Asia"
+            data-tz="Asia/Tokyo"
+            role="button"
+            tabindex="0"
+            aria-label="Asia"
+            d="M480 70h220l90 90-70 110-210 40-60-80z"
+          ></path>
+          <path
+            class="world-map__region"
+            data-zone="Australia"
+            data-tz="Australia/Sydney"
+            role="button"
+            tabindex="0"
+            aria-label="Australia"
+            d="M600 260h120l50 60-45 50-125-15-25-40z"
+          ></path>
+        </svg>
+        <p class="map-info" id="map-info" role="status" aria-live="polite">
+          Tap any region to explore the local time.
+        </p>
+      </section>
     </main>
     <script src="script.js"></script>
   </body>

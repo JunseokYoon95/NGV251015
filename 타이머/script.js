@@ -1,46 +1,152 @@
-const timeElement = document.getElementById("clock-time");
+﻿const timeElement = document.getElementById("clock-time");
 const dateElement = document.getElementById("clock-date");
 const toggleButton = document.getElementById("format-toggle");
+const minuteWave = document.getElementById("minute-wave");
+const mapInfo = document.getElementById("map-info");
+const mapRegions = document.querySelectorAll(".world-map__region");
 
 let use24Hour = true;
-const DAY_LABELS = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+let lastMinute = null;
+let waveTimeoutId = null;
 
-function pad(value) {
-  return value.toString().padStart(2, "0");
-}
+const browserLocale = navigator.language || "en-US";
+const hasIntl = typeof Intl !== "undefined" && typeof Intl.DateTimeFormat === "function";
 
-function formatTime(date) {
-  let hours = date.getHours();
-
-  if (!use24Hour) {
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-    return `${pad(hours)}:${pad(date.getMinutes())}:${pad(date.getSeconds())} ${ampm}`;
+function formatClockTime(date) {
+  if (!hasIntl) {
+    return date.toLocaleTimeString(browserLocale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: !use24Hour,
+    });
   }
 
-  return `${pad(hours)}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  const locale = use24Hour ? "en-GB" : "en-US";
+  return new Intl.DateTimeFormat(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: !use24Hour,
+  }).format(date);
 }
 
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-  const dayLabel = DAY_LABELS[date.getDay()];
-  return `${year}년 ${month}월 ${day}일 ${dayLabel}`;
+function formatClockDate(date) {
+  if (!hasIntl) {
+    return date.toDateString();
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+function triggerMinuteAnimation() {
+  if (!minuteWave) {
+    return;
+  }
+
+  minuteWave.classList.remove("is-active");
+  // Force reflow so the animation can replay even if triggered quickly.
+  void minuteWave.offsetWidth;
+  minuteWave.classList.add("is-active");
+
+  if (waveTimeoutId) {
+    clearTimeout(waveTimeoutId);
+  }
+
+  waveTimeoutId = window.setTimeout(() => {
+    minuteWave.classList.remove("is-active");
+  }, 6000);
 }
 
 function updateClock() {
   const now = new Date();
-  timeElement.textContent = formatTime(now);
-  dateElement.textContent = formatDate(now);
+  timeElement.textContent = formatClockTime(now);
+  dateElement.textContent = formatClockDate(now);
+
+  const currentMinute = now.getMinutes();
+  if (lastMinute === null) {
+    lastMinute = currentMinute;
+  } else if (currentMinute !== lastMinute) {
+    lastMinute = currentMinute;
+    triggerMinuteAnimation();
+  }
+}
+
+function formatRegionTime(timeZone) {
+  const now = new Date();
+  try {
+    if (!hasIntl) {
+      const fallback = now.toLocaleString(browserLocale, { timeZone });
+      return { time: fallback, date: "" };
+    }
+
+    const timeFormatter = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZone,
+    });
+
+    const dateFormatter = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      timeZone,
+    });
+
+    return {
+      time: timeFormatter.format(now),
+      date: dateFormatter.format(now),
+    };
+  } catch (error) {
+    console.error("Timezone formatting failed", error);
+    const fallback = now.toLocaleString(browserLocale, { timeZone });
+    return { time: fallback, date: "" };
+  }
+}
+
+function handleRegionSelection(region) {
+  const zoneName = region.dataset.zone;
+  const timeZone = region.dataset.tz;
+
+  if (!zoneName || !timeZone) {
+    return;
+  }
+
+  mapRegions.forEach((element) => element.classList.remove("is-active"));
+  region.classList.add("is-active");
+
+  const { time, date } = formatRegionTime(timeZone);
+  const dateSuffix = date ? " - " + date : "";
+  mapInfo.textContent = `${zoneName}: ${time}${dateSuffix}`;
+}
+
+function enableMapInteractions() {
+  mapRegions.forEach((region) => {
+    region.addEventListener("click", () => handleRegionSelection(region));
+    region.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        handleRegionSelection(region);
+      }
+    });
+  });
 }
 
 toggleButton.addEventListener("click", () => {
   use24Hour = !use24Hour;
-  toggleButton.textContent = use24Hour ? "24시간 보기" : "12시간 보기";
+  toggleButton.textContent = use24Hour
+    ? "Switch to 12-hour"
+    : "Switch to 24-hour";
   updateClock();
 });
 
-// Update once immediately before starting the interval so the clock is never stale.
+enableMapInteractions();
 updateClock();
-setInterval(updateClock, 500);
+setInterval(updateClock, 1000);
