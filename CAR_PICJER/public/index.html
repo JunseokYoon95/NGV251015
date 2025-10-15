@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Car Picker Quiz</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <h1>Car Picker Quiz</h1>
+        <p class="app__subtitle">자동차 사진으로 메이커와 모델을 맞춰보세요!</p>
+      </header>
+
+      <section id="start-screen" class="screen screen--start">
+        <div class="start-card card">
+          <header class="start-card__header">
+            <h2>Car Picker Arena</h2>
+            <p>
+              랜덤으로 등장하는 자동차 사진을 보고 메이커와 모델을 맞혀보세요.
+              60초 안에 선택하고 100점 만점에 도전해요!
+            </p>
+          </header>
+          <ul class="rules">
+            <li>총 10문제 · 문제당 10점</li>
+            <li>선택지 5개 · 메이커와 모델을 정확히 선택</li>
+            <li>문제당 제한 시간 60초</li>
+          </ul>
+          <footer class="start-card__footer">
+            <p id="start-status" class="status-message">
+              이미지 정보를 불러오는 중...
+            </p>
+            <button id="start-btn" class="btn btn--primary" disabled>
+              <span>퀴즈 시작</span>
+              <span class="btn__sparkle" aria-hidden="true">→</span>
+            </button>
+          </footer>
+        </div>
+      </section>
+
+      <section id="quiz-screen" class="screen screen--quiz" hidden>
+        <div class="quiz__topbar">
+          <span id="progress" class="progress">1 / 10</span>
+          <span class="timer">
+            <span class="timer__icon" aria-hidden="true">⏱</span>
+            <span id="timer-value">01:00</span>
+          </span>
+          <span id="score" class="score">점수: 0</span>
+        </div>
+
+        <div class="quiz__content">
+          <div class="quiz__image">
+            <img id="question-image" src="" alt="자동차 사진" />
+          </div>
+          <div class="quiz__sidebar">
+            <div
+              id="choices"
+              class="quiz__choices"
+              role="listbox"
+              aria-label="정답 선택지"
+            ></div>
+          </div>
+        </div>
+
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section id="results-screen" class="screen screen--results" hidden>
+        <div class="card">
+          <h2>결과</h2>
+          <p id="final-score" class="final-score"></p>
+          <p id="final-time" class="final-time"></p>
+
+          <div id="review" class="review"></div>
+
+          <div class="actions">
+            <button id="restart-btn" class="btn btn--primary">다시 풀기</button>
+            <button id="back-btn" class="btn btn--ghost">처음으로</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <template id="choice-template">
+      <button class="choice" type="button"></button>
+    </template>
+
+    <template id="review-item-template">
+      <article class="review__item">
+        <img class="review__thumb" alt="" />
+        <div class="review__text">
+          <p class="review__question"></p>
+          <p class="review__answer"></p>
+        </div>
+      </article>
+    </template>
+
+    <div id="fireworks" class="fireworks" hidden aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

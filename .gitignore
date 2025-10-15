@@ -1,0 +1,13 @@
+﻿# Ignore generated quiz images (large files)
+CAR_PICJER/public/images/cars/
+CAR_PICJER/public/images/*
+!CAR_PICJER/public/images/.gitignore
+
+# macOS / Windows cruft
+.DS_Store
+Thumbs.db
+
+# Node / Python caches (if any appear later)
+node_modules/
+__pycache__/
+*.pyc
