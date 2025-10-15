@@ -1,0 +1,82 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #002b5b, #380036);
+  color: #f9f9f9;
+}
+
+.clock {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 3rem 4rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.clock__title {
+  margin: 0 0 1rem;
+  font-weight: 500;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: #d7e9f7;
+}
+
+.clock__time {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.clock__date {
+  margin: 1rem 0 2rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: rgba(249, 249, 249, 0.8);
+}
+
+.clock__toggle {
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.85);
+  color: #1b1b1b;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.clock__toggle:hover,
+.clock__toggle:focus-visible {
+  transform: translateY(-2px);
+  background: #ffffff;
+}
+
+.clock__toggle:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .clock {
+    width: min(92vw, 480px);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+  }
+}
